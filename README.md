@@ -8,3 +8,24 @@
 - Tests: `uv run python -m pytest -q`.
 - API and semantics: [CORE.md](CORE.md), [MODELING.md](MODELING.md), [EXECUTION.md](EXECUTION.md).
 - Models declare application behavior; the compiler and runtime operate on the shared representation. Execution is bounded, and passing finite runs does not establish universal safety.
+
+A counter that increments every half second, including at time zero:
+
+```python
+from warpsim.core import (
+    Bits, Cell, Clock, Program, Region, Store,
+    const, due, op, read, run_native,
+)
+
+u8 = Bits(8)
+counter = Program(
+    "counter",
+    (Cell("count", u8),),
+    (Clock("tick", "1/2"),),
+    (Region("increment", (
+        Store("count", op("add", read("count", u8), const(1, u8))),
+    ), due("tick")),),
+)
+result = run_native(counter, device="cpu", until="2", max_events=8)
+print(result.state["count"])  # (5,)
+```
