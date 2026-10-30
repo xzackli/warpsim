@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "warpsim-core"
+version = "0.1.0"
+description = "Typed transition models and exact-time CPU/CUDA execution"
+requires-python = ">=3.12"
+dependencies = ["numpy==2.5.4", "warp-lang==1.18.0"]
+
+[project.optional-dependencies]
+test = ["pytest==9.2.0"]
+
+[project.scripts]
+vlsi-sim = "warpsim.entrypoint:main"
+warpsim-core = "warpsim.core.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
